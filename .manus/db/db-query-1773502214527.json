@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE `courseImages` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`courseLevel` varchar(100) NOT NULL,\n\t`imageKey` varchar(500) NOT NULL,\n\t`imageUrl` text NOT NULL,\n\t`fileName` varchar(255) NOT NULL,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n\tCONSTRAINT `courseImages_id` PRIMARY KEY(`id`),\n\tCONSTRAINT `courseImages_courseLevel_unique` UNIQUE(`courseLevel`)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 38PBdW3tDBp1qJi.673a7e78f915 --database CgvjRURmXSSK8LMnheshHL --execute CREATE TABLE `courseImages` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`courseLevel` varchar(100) NOT NULL,\n\t`imageKey` varchar(500) NOT NULL,\n\t`imageUrl` text NOT NULL,\n\t`fileName` varchar(255) NOT NULL,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n\tCONSTRAINT `courseImages_id` PRIMARY KEY(`id`),\n\tCONSTRAINT `courseImages_courseLevel_unique` UNIQUE(`courseLevel`)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1799
+}

@@ -99,3 +99,13 @@
 - [x] Change Thai font to modern font (Prompt)
 - [x] Test all functionality (16 tests passing)
 - [x] Verify responsive design
+
+## Admin Features (Phase 7)
+- [x] Create Admin Dashboard page
+- [x] Add course image upload functionality
+- [x] Add free resource file upload functionality
+- [x] Create admin authentication/access control
+- [x] Add course management UI
+- [x] Add resource management UI
+- [x] Test admin functionality (16 tests passing)
+- [ ] Update Home page to display course images

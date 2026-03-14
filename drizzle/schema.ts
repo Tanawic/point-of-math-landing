@@ -62,3 +62,19 @@ export const resources = mysqlTable("resources", {
 
 export type Resource = typeof resources.$inferSelect;
 export type InsertResource = typeof resources.$inferInsert;
+
+/**
+ * Course images table to store course thumbnails
+ */
+export const courseImages = mysqlTable("courseImages", {
+  id: int("id").autoincrement().primaryKey(),
+  courseLevel: varchar("courseLevel", { length: 100 }).notNull().unique(),
+  imageKey: varchar("imageKey", { length: 500 }).notNull(),
+  imageUrl: text("imageUrl").notNull(),
+  fileName: varchar("fileName", { length: 255 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CourseImage = typeof courseImages.$inferSelect;
+export type InsertCourseImage = typeof courseImages.$inferInsert;

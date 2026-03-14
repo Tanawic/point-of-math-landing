@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, enrollments, InsertEnrollment, resources, InsertResource } from "../drizzle/schema";
+import { InsertUser, users, enrollments, InsertEnrollment, resources, InsertResource, courseImages, InsertCourseImage } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -172,4 +172,60 @@ export async function deleteResource(id: number) {
   }
 
   return await db.delete(resources).where(eq(resources.id, id));
+}
+
+/**
+ * Upsert a course image
+ */
+export async function upsertCourseImage(courseImage: InsertCourseImage) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  return await db.insert(courseImages).values(courseImage).onDuplicateKeyUpdate({
+    set: {
+      imageKey: courseImage.imageKey,
+      imageUrl: courseImage.imageUrl,
+      fileName: courseImage.fileName,
+      updatedAt: new Date(),
+    },
+  });
+}
+
+/**
+ * Get course image by course level
+ */
+export async function getCourseImage(courseLevel: string) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const result = await db.select().from(courseImages).where(eq(courseImages.courseLevel, courseLevel)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+/**
+ * Get all course images
+ */
+export async function getAllCourseImages() {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  return await db.select().from(courseImages);
+}
+
+/**
+ * Delete course image
+ */
+export async function deleteCourseImage(id: number) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  return await db.delete(courseImages).where(eq(courseImages.id, id));
 }

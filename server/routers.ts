@@ -3,7 +3,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
 import { z } from "zod";
-import { createEnrollment, getAllEnrollments, getResources, createResource, deleteResource } from "./db";
+import { createEnrollment, getAllEnrollments, getResources, createResource, deleteResource, upsertCourseImage, getCourseImage, getAllCourseImages, deleteCourseImage } from "./db";
 import { notifyOwner } from "./_core/notification";
 
 export const appRouter = router({
@@ -159,6 +159,54 @@ New student enrollment:
           success: true,
           message: "Resource deleted successfully",
         };
+      }),
+  }),
+
+  courseImages: router({
+    list: publicProcedure.query(async () => {
+      return await getAllCourseImages();
+    }),
+
+    get: publicProcedure
+      .input(z.object({ courseLevel: z.string() }))
+      .query(async ({ input }) => {
+        return await getCourseImage(input.courseLevel);
+      }),
+
+    upsert: protectedProcedure
+      .input(
+        z.object({
+          courseLevel: z.string().min(1),
+          imageKey: z.string().min(1),
+          imageUrl: z.string().url(),
+          fileName: z.string().min(1),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Unauthorized");
+        }
+
+        await upsertCourseImage({
+          courseLevel: input.courseLevel,
+          imageKey: input.imageKey,
+          imageUrl: input.imageUrl,
+          fileName: input.fileName,
+        });
+
+        return { success: true, message: "Course image updated" };
+      }),
+
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Unauthorized");
+        }
+
+        await deleteCourseImage(input.id);
+
+        return { success: true, message: "Course image deleted" };
       }),
   }),
 });
