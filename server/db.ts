@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, enrollments, InsertEnrollment, resources, InsertResource } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,87 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+/**
+ * Create a new enrollment record
+ */
+export async function createEnrollment(enrollment: InsertEnrollment) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const result = await db.insert(enrollments).values(enrollment);
+  return result;
+}
+
+/**
+ * Get all enrollments (for admin)
+ */
+export async function getAllEnrollments() {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  return await db.select().from(enrollments).orderBy(enrollments.createdAt);
+}
+
+/**
+ * Create a new resource (sheet or exam archive)
+ */
+export async function createResource(resource: InsertResource) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const result = await db.insert(resources).values(resource);
+  return result;
+}
+
+/**
+ * Get all resources, optionally filtered by type and course level
+ */
+export async function getResources(resourceType?: string, courseLevel?: string) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  let query = db.select().from(resources);
+  
+  // Note: Drizzle doesn't support complex WHERE with AND easily in this pattern,
+  // so we'll fetch all and filter in JS, or you can write raw SQL
+  const allResources = await query;
+  
+  return allResources.filter(r => {
+    if (resourceType && r.resourceType !== resourceType) return false;
+    if (courseLevel && r.courseLevel !== courseLevel) return false;
+    return true;
+  });
+}
+
+/**
+ * Get all resources by type
+ */
+export async function getResourcesByType(resourceType: string) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  const allResources = await db.select().from(resources);
+  return allResources.filter(r => r.resourceType === resourceType);
+}
+
+/**
+ * Delete a resource
+ */
+export async function deleteResource(id: number) {
+  const db = await getDb();
+  if (!db) {
+    throw new Error("Database not available");
+  }
+
+  return await db.delete(resources).where(eq(resources.id, id));
+}

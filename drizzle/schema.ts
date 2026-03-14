@@ -25,4 +25,40 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * Enrollments table to store student enrollment applications
+ */
+export const enrollments = mysqlTable("enrollments", {
+  id: int("id").autoincrement().primaryKey(),
+  firstName: varchar("firstName", { length: 255 }).notNull(),
+  lastName: varchar("lastName", { length: 255 }).notNull(),
+  email: varchar("email", { length: 320 }).notNull(),
+  phone: varchar("phone", { length: 20 }).notNull(),
+  courseLevel: varchar("courseLevel", { length: 100 }).notNull(), // e.g., "ม.1-3", "ม.4-6", "สอบเข้า"
+  message: text("message"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Enrollment = typeof enrollments.$inferSelect;
+export type InsertEnrollment = typeof enrollments.$inferInsert;
+
+/**
+ * Downloadable resources table for sheets and exam archives
+ */
+export const resources = mysqlTable("resources", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  resourceType: mysqlEnum("resourceType", ["sheet", "exam", "other"]).notNull(),
+  courseLevel: varchar("courseLevel", { length: 100 }), // e.g., "ม.1-3", "ม.4-6", etc.
+  fileKey: varchar("fileKey", { length: 500 }).notNull(), // S3 file key
+  fileUrl: text("fileUrl").notNull(), // S3 presigned URL or public URL
+  fileName: varchar("fileName", { length: 255 }).notNull(),
+  fileSize: int("fileSize"), // in bytes
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Resource = typeof resources.$inferSelect;
+export type InsertResource = typeof resources.$inferInsert;
