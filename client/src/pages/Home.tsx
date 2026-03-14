@@ -8,18 +8,27 @@ import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { ChevronRight, Download, Play, Award, BookOpen, Mail } from "lucide-react";
 
+const COURSE_CATEGORIES = [
+  { id: "all", label: "All Courses" },
+  { id: "junior-high", label: "Junior High (ม.1-3)" },
+  { id: "senior-high", label: "Senior High (ม.4-6)" },
+  { id: "entrance-exam", label: "Entrance Exams" },
+  { id: "international", label: "International" },
+  { id: "olympiad", label: "Olympiad" },
+];
+
 const COURSES = [
-  { level: "ม.1-3", description: "Foundation mathematics for junior high school", price: "2,990" },
-  { level: "ม.4-6", description: "Advanced mathematics for senior high school", price: "3,490" },
-  { level: "สอบเข้า", description: "University entrance exam preparation", price: "4,990" },
-  { level: "A-level", description: "International A-level mathematics", price: "3,990" },
-  { level: "IGCSE", description: "International General Certificate of Secondary Education", price: "3,990" },
-  { level: "SAT Math", description: "SAT mathematics preparation", price: "4,490" },
-  { level: "AP Precalculus", description: "AP Precalculus course", price: "3,990" },
-  { level: "AP Calculus AB", description: "AP Calculus AB course", price: "4,490" },
-  { level: "AP Calculus BC", description: "AP Calculus BC course", price: "4,990" },
-  { level: "AP Statistics", description: "AP Statistics course", price: "3,990" },
-  { level: "สอวน.คณิต ค่าย 1", description: "Math Olympiad preparation - Camp 1", price: "5,990" },
+  { level: "ม.1-3", description: "Foundation mathematics for junior high school", price: "2,990", category: "junior-high" },
+  { level: "ม.4-6", description: "Advanced mathematics for senior high school", price: "3,490", category: "senior-high" },
+  { level: "สอบเข้า", description: "University entrance exam preparation", price: "4,990", category: "entrance-exam" },
+  { level: "A-level", description: "International A-level mathematics", price: "3,990", category: "international" },
+  { level: "IGCSE", description: "International General Certificate of Secondary Education", price: "3,990", category: "international" },
+  { level: "SAT Math", description: "SAT mathematics preparation", price: "4,490", category: "international" },
+  { level: "AP Precalculus", description: "AP Precalculus course", price: "3,990", category: "international" },
+  { level: "AP Calculus AB", description: "AP Calculus AB course", price: "4,490", category: "international" },
+  { level: "AP Calculus BC", description: "AP Calculus BC course", price: "4,990", category: "international" },
+  { level: "AP Statistics", description: "AP Statistics course", price: "3,990", category: "international" },
+  { level: "สอวน.คณิต ค่าย 1", description: "Math Olympiad preparation - Camp 1", price: "5,990", category: "olympiad" },
 ];
 
 const INSTRUCTOR = {
@@ -38,6 +47,7 @@ const YOUTUBE_VIDEO_ID = "7nvjrgqKjJE";
 
 export default function Home() {
   const [selectedCourse, setSelectedCourse] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -92,6 +102,10 @@ export default function Home() {
   const handleLineContact = () => {
     window.open("https://line.me/R/ti/p/@210krawo", "_blank");
   };
+
+  const filteredCourses = selectedCategory === "all" 
+    ? COURSES 
+    : COURSES.filter(course => course.category === selectedCategory);
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
@@ -160,16 +174,39 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Courses Section */}
+      {/* Courses Section with Filter */}
       <section id="courses" className="py-20 px-6 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Courses</h2>
-          <p className="text-gray-600 mb-12 text-lg">
+          <p className="text-gray-600 mb-8 text-lg">
             Comprehensive mathematics courses tailored to different educational levels and goals
           </p>
           
+          {/* Filter Tabs */}
+          <div className="mb-12 flex flex-wrap gap-2">
+            {COURSE_CATEGORIES.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => setSelectedCategory(category.id)}
+                className={`px-4 py-2 rounded-lg font-medium transition ${
+                  selectedCategory === category.id
+                    ? "bg-blue-600 text-white"
+                    : "bg-white border border-gray-300 text-gray-700 hover:border-blue-400"
+                }`}
+              >
+                {category.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Course Count */}
+          <p className="text-gray-600 mb-6 text-sm">
+            Showing {filteredCourses.length} of {COURSES.length} courses
+          </p>
+
+          {/* Courses Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {COURSES.map((course) => (
+            {filteredCourses.map((course) => (
               <Card key={course.level} className="border border-gray-200 hover:border-blue-300 hover:shadow-md transition">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg text-gray-900">{course.level}</CardTitle>
@@ -192,6 +229,12 @@ export default function Home() {
               </Card>
             ))}
           </div>
+
+          {filteredCourses.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">No courses found in this category.</p>
+            </div>
+          )}
         </div>
       </section>
 

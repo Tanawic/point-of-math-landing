@@ -61,3 +61,12 @@
 - [ ] Final testing and bug fixes
 - [x] Create checkpoint before publishing
 - [ ] Deploy to production
+
+## Course Filter Feature (Phase 3)
+- [x] Add course categories/levels (Junior High, Senior High, Entrance Exams, International)
+- [x] Create filter UI component with tabs/buttons
+- [x] Implement filter logic in Home component
+- [x] Update database schema to include course category
+- [x] Add category to course cards
+- [x] Test filter functionality (9 tests passing)
+- [x] Ensure responsive design on mobile
