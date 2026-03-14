@@ -244,7 +244,6 @@ export default function Home() {
                 </div>
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-2">{INSTRUCTOR.name}</h3>
-              <p className="text-blue-600 font-medium mb-4">{INSTRUCTOR.title}</p>
               <p className="text-gray-600">{INSTRUCTOR.experience}</p>
             </div>
 

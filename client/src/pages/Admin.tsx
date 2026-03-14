@@ -17,7 +17,7 @@ const COURSES = [
 
 export default function Admin() {
   const { user, loading } = useAuth();
-  const [activeTab, setActiveTab] = useState<"courses" | "resources">("courses");
+  const [activeTab, setActiveTab] = useState<"courses" | "resources" | "manage-courses">("courses");
   const [selectedCourse, setSelectedCourse] = useState<string>("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -177,6 +177,16 @@ export default function Admin() {
             }`}
           >
             ไฟล์แจกฟรี
+          </button>
+          <button
+            onClick={() => setActiveTab("manage-courses")}
+            className={`pb-3 px-4 font-medium transition ${
+              activeTab === "manage-courses"
+                ? "text-blue-600 border-b-2 border-blue-600"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            จัดการคอร์ส
           </button>
         </div>
 
@@ -362,6 +372,21 @@ export default function Admin() {
                 <p className="text-gray-600">ยังไม่มีไฟล์แจกฟรี</p>
               )}
             </div>
+          </div>
+        )}
+
+        {/* Manage Courses Tab */}
+        {activeTab === "manage-courses" && (
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>จัดการคอร์ส</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4">คลิก เพิ่ม และลบคอร์สได้ที่ Management UI</p>
+                <p className="text-gray-700 font-medium">คลิกปุ่ม คลิกแก้ไข และลบคอร์สได้ที่ Database</p>
+              </CardContent>
+            </Card>
           </div>
         )}
       </div>
