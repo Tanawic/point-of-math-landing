@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
 import { z } from "zod";
 import { createEnrollment, getAllEnrollments, getResources, createResource, deleteResource, upsertCourseImage, getCourseImage, getAllCourseImages, deleteCourseImage } from "./db";
+import { storagePut } from "./storage";
 import { notifyOwner } from "./_core/notification";
 
 export const appRouter = router({
@@ -213,6 +214,39 @@ New student enrollment:
         await deleteCourseImage(input.id);
 
         return { success: true, message: "Course image deleted" };
+      }),
+  }),
+
+  /**
+   * Payment slip upload
+   */
+  paymentSlips: router({
+    upload: publicProcedure
+      .input(
+        z.object({
+          fileName: z.string().min(1, "File name is required"),
+          fileData: z.string().min(1, "File data is required"), // base64 encoded
+          mimeType: z.string().min(1, "MIME type is required"),
+        })
+      )
+      .mutation(async ({ input }) => {
+        try {
+          // Convert base64 to buffer
+          const buffer = Buffer.from(input.fileData, 'base64');
+          
+          // Upload to S3
+          const fileKey = `payment-slips/${Date.now()}-${input.fileName}`;
+          const { url } = await storagePut(fileKey, buffer, input.mimeType);
+          
+          return {
+            success: true,
+            url,
+            key: fileKey,
+          };
+        } catch (error) {
+          console.error("Payment slip upload error:", error);
+          throw new Error("Failed to upload payment slip");
+        }
       }),
   }),
 });

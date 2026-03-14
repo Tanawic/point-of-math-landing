@@ -133,3 +133,13 @@
 - [x] Store uploaded slip URLs in S3
 - [x] Update enrollment notification email to include LINE ID and slip
 - [x] Test form submission with all fields (16 tests passing)
+
+## Payment Slip Upload via tRPC (Phase 11)
+- [x] Create tRPC procedure for payment slip upload
+- [x] Implement base64 file encoding on frontend
+- [x] Upload files to S3 via tRPC endpoint
+- [x] Update enrollment form to use tRPC for file upload
+- [x] Add error handling for file upload failures
+- [x] Write comprehensive tests for payment slip upload (21 tests passing)
+- [x] Test file type validation (PDF, images)
+- [x] Verify S3 integration and URL generation

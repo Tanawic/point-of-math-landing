@@ -51,6 +51,7 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitEnrollment = trpc.enrollments.submit.useMutation();
+  const uploadPaymentSlip = trpc.paymentSlips.upload.useMutation();
   const { data: resources } = trpc.resources.list.useQuery();
   const { data: courseImages } = trpc.courseImages.list.useQuery();
 
@@ -104,15 +105,26 @@ export default function Home() {
     try {
       let paymentSlipUrl = "";
       if (paymentSlipFile) {
-        const fileFormData = new FormData();
-        fileFormData.append("file", paymentSlipFile);
-        const uploadRes = await fetch("/api/upload-payment-slip", {
-          method: "POST",
-          body: fileFormData,
+        // Convert file to base64
+        const reader = new FileReader();
+        const base64String = await new Promise<string>((resolve, reject) => {
+          reader.onload = () => {
+            const result = reader.result as string;
+            resolve(result.split(',')[1]);
+          };
+          reader.onerror = () => reject(new Error("File read failed"));
+          reader.readAsDataURL(paymentSlipFile);
         });
-        const uploadData = await uploadRes.json();
-        paymentSlipUrl = uploadData.url;
+        
+        // Upload payment slip via tRPC
+        const uploadResult = await uploadPaymentSlip.mutateAsync({
+          fileName: paymentSlipFile.name,
+          fileData: base64String,
+          mimeType: paymentSlipFile.type,
+        });
+        paymentSlipUrl = uploadResult.url;
       }
+      
       await submitEnrollment.mutateAsync({
         ...formData,
         paymentSlipUrl,
@@ -120,6 +132,7 @@ export default function Home() {
       toast.success("ส่งใบสมัครเรียบร้อย! เราจะติดต่อคุณผ่าน LINE ในเร็วๆ นี้");
       handleCloseEnrollModal();
     } catch (error) {
+      console.error("Enrollment error:", error);
       toast.error("ส่งใบสมัครไม่สำเร็จ กรุณาลองใหม่");
     } finally {
       setIsSubmitting(false);
