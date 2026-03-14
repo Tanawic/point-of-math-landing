@@ -123,3 +123,13 @@
 - [x] Ensure logo fits properly without overflow
 - [x] Test responsive sizing on mobile
 - [x] Verify alignment with text (16 tests passing)
+
+## Enrollment Form Enhancement (Phase 10)
+- [x] Add LINE ID field to enrollment form
+- [x] Add payment slip file upload to enrollment form
+- [x] Update database schema to store LINE ID and slip file URL
+- [x] Create file upload API for payment slips
+- [x] Add file validation (size, type)
+- [x] Store uploaded slip URLs in S3
+- [x] Update enrollment notification email to include LINE ID and slip
+- [x] Test form submission with all fields (16 tests passing)

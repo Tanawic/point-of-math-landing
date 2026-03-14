@@ -34,6 +34,8 @@ export const appRouter = router({
           email: z.string().email("Invalid email address"),
           phone: z.string().min(1, "Phone number is required"),
           courseLevel: z.string().min(1, "Please select a course level"),
+          lineId: z.string().optional(),
+          paymentSlipUrl: z.string().optional(),
           message: z.string().optional(),
         })
       )
@@ -46,6 +48,8 @@ export const appRouter = router({
             email: input.email,
             phone: input.phone,
             courseLevel: input.courseLevel,
+            lineId: input.lineId,
+            paymentSlipUrl: input.paymentSlipUrl,
             message: input.message,
           });
 
@@ -57,6 +61,8 @@ New student enrollment:
 - Email: ${input.email}
 - Phone: ${input.phone}
 - Course Level: ${input.courseLevel}
+- LINE ID: ${input.lineId || "N/A"}
+- Payment Slip: ${input.paymentSlipUrl ? "Attached" : "Not provided"}
 - Message: ${input.message || "N/A"}
           `.trim();
 

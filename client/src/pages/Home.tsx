@@ -44,8 +44,10 @@ export default function Home() {
     email: "",
     phone: "",
     courseLevel: "",
+    lineId: "",
     message: "",
   });
+  const [paymentSlipFile, setPaymentSlipFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitEnrollment = trpc.enrollments.submit.useMutation();
@@ -83,9 +85,11 @@ export default function Home() {
       email: "",
       phone: "",
       courseLevel: "",
+      lineId: "",
       message: "",
     });
     setSelectedCourse("");
+    setPaymentSlipFile(null);
   };
 
   const handleSubmitEnrollment = async (e: React.FormEvent) => {
@@ -98,13 +102,34 @@ export default function Home() {
 
     setIsSubmitting(true);
     try {
-      await submitEnrollment.mutateAsync(formData);
+      let paymentSlipUrl = "";
+      if (paymentSlipFile) {
+        const fileFormData = new FormData();
+        fileFormData.append("file", paymentSlipFile);
+        const uploadRes = await fetch("/api/upload-payment-slip", {
+          method: "POST",
+          body: fileFormData,
+        });
+        const uploadData = await uploadRes.json();
+        paymentSlipUrl = uploadData.url;
+      }
+      await submitEnrollment.mutateAsync({
+        ...formData,
+        paymentSlipUrl,
+      });
       toast.success("ส่งใบสมัครเรียบร้อย! เราจะติดต่อคุณผ่าน LINE ในเร็วๆ นี้");
       handleCloseEnrollModal();
     } catch (error) {
       toast.error("ส่งใบสมัครไม่สำเร็จ กรุณาลองใหม่");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPaymentSlipFile(file);
     }
   };
 
@@ -408,6 +433,31 @@ export default function Home() {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">LINE ID (ไม่บังคับ)</label>
+              <Input
+                type="text"
+                name="lineId"
+                value={formData.lineId}
+                onChange={handleFormChange}
+                placeholder="@yourlineId"
+                className="border border-gray-300"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">สลิปโอนเงิน (ไม่บังคับ)</label>
+              <Input
+                type="file"
+                accept="image/*,.pdf"
+                onChange={handleFileChange}
+                className="border border-gray-300"
+              />
+              {paymentSlipFile && (
+                <p className="text-sm text-green-600 mt-1">✓ {paymentSlipFile.name}</p>
+              )}
             </div>
 
             <div>

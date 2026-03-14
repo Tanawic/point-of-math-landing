@@ -34,7 +34,10 @@ export const enrollments = mysqlTable("enrollments", {
   lastName: varchar("lastName", { length: 255 }).notNull(),
   email: varchar("email", { length: 320 }).notNull(),
   phone: varchar("phone", { length: 20 }).notNull(),
-  courseLevel: varchar("courseLevel", { length: 100 }).notNull(), // e.g., "ม.1-3", "ม.4-6", "สอบเข้า"
+  courseLevel: varchar("courseLevel", { length: 100 }).notNull(),
+  lineId: varchar("lineId", { length: 255 }),
+  paymentSlipKey: varchar("paymentSlipKey", { length: 500 }),
+  paymentSlipUrl: text("paymentSlipUrl"),
   message: text("message"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
