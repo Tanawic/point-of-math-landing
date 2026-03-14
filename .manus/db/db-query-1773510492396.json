@@ -1,9 +1,0 @@
-{
-  "query": "CREATE TABLE `courses` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`level` varchar(100) NOT NULL,\n\t`description` text NOT NULL,\n\t`price` varchar(50) NOT NULL,\n\t`category` varchar(50) NOT NULL,\n\t`displayOrder` int NOT NULL DEFAULT 0,\n\t`isActive` int NOT NULL DEFAULT 1,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n\tCONSTRAINT `courses_id` PRIMARY KEY(`id`),\n\tCONSTRAINT `courses_level_unique` UNIQUE(`level`)\n);",
-  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 38PBdW3tDBp1qJi.673a7e78f915 --database CgvjRURmXSSK8LMnheshHL --execute CREATE TABLE `courses` (\n\t`id` int AUTO_INCREMENT NOT NULL,\n\t`level` varchar(100) NOT NULL,\n\t`description` text NOT NULL,\n\t`price` varchar(50) NOT NULL,\n\t`category` varchar(50) NOT NULL,\n\t`displayOrder` int NOT NULL DEFAULT 0,\n\t`isActive` int NOT NULL DEFAULT 1,\n\t`createdAt` timestamp NOT NULL DEFAULT (now()),\n\t`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,\n\tCONSTRAINT `courses_id` PRIMARY KEY(`id`),\n\tCONSTRAINT `courses_level_unique` UNIQUE(`level`)\n);",
-  "rows": [],
-  "messages": [],
-  "stdout": "",
-  "stderr": "",
-  "execution_time_ms": 1772
-}

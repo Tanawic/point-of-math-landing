@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, enrollments, InsertEnrollment, resources, InsertResource, courseImages, InsertCourseImage, courses, InsertCourse, Course } from "../drizzle/schema";
+import { InsertUser, users, enrollments, InsertEnrollment, resources, InsertResource, courseImages, InsertCourseImage } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -228,62 +228,4 @@ export async function deleteCourseImage(id: number) {
   }
 
   return await db.delete(courseImages).where(eq(courseImages.id, id));
-}
-
-/**
- * Get all active courses
- */
-export async function getAllCourses(): Promise<Course[]> {
-  const db = await getDb();
-  if (!db) {
-    throw new Error("Database not available");
-  }
-
-  return await db.select().from(courses).where(eq(courses.isActive, 1)).orderBy(courses.displayOrder);
-}
-
-/**
- * Get course by level
- */
-export async function getCourseByLevel(level: string): Promise<Course | undefined> {
-  const db = await getDb();
-  if (!db) {
-    throw new Error("Database not available");
-  }
-
-  const result = await db.select().from(courses).where(eq(courses.level, level)).limit(1);
-  return result.length > 0 ? result[0] : undefined;
-}
-
-/**
- * Create or update a course
- */
-export async function upsertCourse(course: InsertCourse) {
-  const db = await getDb();
-  if (!db) {
-    throw new Error("Database not available");
-  }
-
-  return await db.insert(courses).values(course).onDuplicateKeyUpdate({
-    set: {
-      description: course.description,
-      price: course.price,
-      category: course.category,
-      displayOrder: course.displayOrder,
-      isActive: course.isActive,
-      updatedAt: new Date(),
-    },
-  });
-}
-
-/**
- * Delete a course
- */
-export async function deleteCourse(id: number) {
-  const db = await getDb();
-  if (!db) {
-    throw new Error("Database not available");
-  }
-
-  return await db.delete(courses).where(eq(courses.id, id));
 }

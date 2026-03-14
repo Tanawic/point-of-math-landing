@@ -3,7 +3,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router, protectedProcedure } from "./_core/trpc";
 import { z } from "zod";
-import { createEnrollment, getAllEnrollments, getResources, createResource, deleteResource, upsertCourseImage, getCourseImage, getAllCourseImages, deleteCourseImage, getAllCourses, getCourseByLevel, upsertCourse, deleteCourse } from "./db";
+import { createEnrollment, getAllEnrollments, getResources, createResource, deleteResource, upsertCourseImage, getCourseImage, getAllCourseImages, deleteCourseImage } from "./db";
 import { notifyOwner } from "./_core/notification";
 
 export const appRouter = router({
@@ -213,57 +213,6 @@ New student enrollment:
         await deleteCourseImage(input.id);
 
         return { success: true, message: "Course image deleted" };
-      }),
-  }),
-
-  courses: router({
-    list: publicProcedure.query(async () => {
-      return await getAllCourses();
-    }),
-
-    getByLevel: publicProcedure
-      .input(z.object({ level: z.string() }))
-      .query(async ({ input }) => {
-        return await getCourseByLevel(input.level);
-      }),
-
-    create: protectedProcedure
-      .input(
-        z.object({
-          level: z.string().min(1),
-          description: z.string().min(1),
-          price: z.string().min(1),
-          category: z.string().min(1),
-          displayOrder: z.number().optional(),
-        })
-      )
-      .mutation(async ({ input, ctx }) => {
-        if (ctx.user?.role !== "admin") {
-          throw new Error("Unauthorized");
-        }
-
-        await upsertCourse({
-          level: input.level,
-          description: input.description,
-          price: input.price,
-          category: input.category,
-          displayOrder: input.displayOrder || 0,
-          isActive: 1,
-        });
-
-        return { success: true, message: "Course created/updated" };
-      }),
-
-    delete: protectedProcedure
-      .input(z.object({ id: z.number() }))
-      .mutation(async ({ input, ctx }) => {
-        if (ctx.user?.role !== "admin") {
-          throw new Error("Unauthorized");
-        }
-
-        await deleteCourse(input.id);
-
-        return { success: true, message: "Course deleted" };
       }),
   }),
 });

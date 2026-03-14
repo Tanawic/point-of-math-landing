@@ -81,21 +81,3 @@ export const courseImages = mysqlTable("courseImages", {
 
 export type CourseImage = typeof courseImages.$inferSelect;
 export type InsertCourseImage = typeof courseImages.$inferInsert;
-
-/**
- * Courses table to store course information
- */
-export const courses = mysqlTable("courses", {
-  id: int("id").autoincrement().primaryKey(),
-  level: varchar("level", { length: 100 }).notNull().unique(), // e.g., "ม.1-3", "A-level"
-  description: text("description").notNull(),
-  price: varchar("price", { length: 50 }).notNull(), // e.g., "1,990"
-  category: varchar("category", { length: 50 }).notNull(), // e.g., "junior-high", "international"
-  displayOrder: int("displayOrder").default(0).notNull(), // for sorting
-  isActive: int("isActive").default(1).notNull(), // 1 = active, 0 = inactive
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-});
-
-export type Course = typeof courses.$inferSelect;
-export type InsertCourse = typeof courses.$inferInsert;
