@@ -178,8 +178,8 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="bg-gray-100 rounded-xl aspect-square flex items-center justify-center overflow-hidden">
-              <img src={LOGO_URL} alt="Point of Math Logo" className="w-2/3 h-2/3 object-contain" />
+            <div className="bg-gray-100 rounded-xl aspect-square flex items-center justify-center overflow-hidden p-4">
+              <img src={LOGO_URL} alt="Point of Math Logo" className="w-full h-full object-contain" />
             </div>
           </div>
         </div>
