@@ -70,3 +70,11 @@
 - [x] Add category to course cards
 - [x] Test filter functionality (9 tests passing)
 - [x] Ensure responsive design on mobile
+
+## Logo & Content Updates (Phase 4)
+- [x] Upload Point of Math logo to S3
+- [x] Replace hero section placeholder with logo
+- [x] Replace instructor section placeholder with logo
+- [x] Change YouTube section to "Coming Soon"
+- [x] Translate entire page to Thai language
+- [x] Test all changes (16 tests passing)
