@@ -109,3 +109,10 @@
 - [x] Add resource management UI
 - [x] Test admin functionality (16 tests passing)
 - [ ] Update Home page to display course images
+
+## Course Image Integration (Phase 8)
+- [x] Fetch course images from database in Home component
+- [x] Display course images in course cards
+- [x] Add fallback placeholder for courses without images
+- [x] Test image display on all screen sizes
+- [x] Verify responsive image loading (16 tests passing)

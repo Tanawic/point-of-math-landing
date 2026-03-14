@@ -49,7 +49,13 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitEnrollment = trpc.enrollments.submit.useMutation();
-  const { data: resources } = trpc.resources.list.useQuery({});
+  const { data: resources } = trpc.resources.list.useQuery();
+  const { data: courseImages } = trpc.courseImages.list.useQuery();
+
+  const getCourseImage = (courseLevel: string) => {
+    if (!courseImages) return null;
+    return courseImages.find(img => img.courseLevel === courseLevel);
+  };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -245,23 +251,42 @@ export default function Home() {
 
           {/* Courses Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCourses.map((course) => (
-              <Card key={course.level} className="border border-gray-200 hover:border-blue-300 transition">
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{course.level}</h3>
-                  <p className="text-gray-600 text-sm mb-6 leading-relaxed">{course.description}</p>
-                  <div className="flex items-baseline justify-between mb-6">
-                    <span className="text-3xl font-bold text-gray-900">฿{course.price}</span>
-                  </div>
-                  <Button 
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                    onClick={() => handleOpenEnrollModal(course.level)}
-                  >
-                    สมัครเรียน
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+            {filteredCourses.map((course) => {
+              const courseImage = getCourseImage(course.level);
+              return (
+                <Card key={course.level} className="border border-gray-200 hover:border-blue-300 transition overflow-hidden flex flex-col">
+                  {courseImage ? (
+                    <div className="w-full h-48 overflow-hidden bg-gray-100">
+                      <img 
+                        src={courseImage.imageUrl} 
+                        alt={course.level}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-4xl text-gray-300 mb-2">📚</div>
+                        <p className="text-gray-400 text-sm">ยังไม่มีรูปภาพ</p>
+                      </div>
+                    </div>
+                  )}
+                  <CardContent className="p-6 flex-1 flex flex-col">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">{course.level}</h3>
+                    <p className="text-gray-600 text-sm mb-6 leading-relaxed flex-1">{course.description}</p>
+                    <div className="flex items-baseline justify-between mb-6">
+                      <span className="text-3xl font-bold text-gray-900">฿{course.price}</span>
+                    </div>
+                    <Button 
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                      onClick={() => handleOpenEnrollModal(course.level)}
+                    >
+                      สมัครเรียน
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
