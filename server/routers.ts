@@ -56,16 +56,21 @@ export const appRouter = router({
 
           // Send notification to owner
           const studentName = `${input.firstName} ${input.lastName}`;
-          const notificationContent = `
+          let notificationContent = `
 New student enrollment:
 - Name: ${studentName}
 - Email: ${input.email}
 - Phone: ${input.phone}
 - Course Level: ${input.courseLevel}
 - LINE ID: ${input.lineId || "N/A"}
-- Payment Slip: ${input.paymentSlipUrl ? "Attached" : "Not provided"}
+- Payment Slip: ${input.paymentSlipUrl ? "Uploaded" : "Not provided"}
 - Message: ${input.message || "N/A"}
           `.trim();
+
+          // Add payment slip image to notification if provided
+          if (input.paymentSlipUrl) {
+            notificationContent += `\n\n📎 Payment Slip Image:\n${input.paymentSlipUrl}`;
+          }
 
           await notifyOwner({
             title: "New Student Enrollment - Point of Math",
