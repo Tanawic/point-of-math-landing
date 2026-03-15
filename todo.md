@@ -152,11 +152,11 @@
 - [x] Test notification generation with payment slip (21 tests passing)
 - [x] Verify email includes clickable payment slip URL
 
-## HTML Email with Embedded Images (Phase 13)
-- [x] Convert enrollment notification to HTML email format
-- [x] Embed payment slip image directly in email (not just link)
-- [x] Add professional styling to email notification
-- [x] Display student details in formatted HTML table
-- [x] Show payment slip image inline with max-width and border styling
-- [x] Test HTML email generation (21 tests passing)
-- [x] Verify payment slip displays properly in email client
+## Email Notification with Clickable Payment Slip Link (Phase 13)
+- [x] Revert to plain text email format for compatibility
+- [x] Display payment slip as clickable link instead of embedded image
+- [x] Show payment slip URL directly in notification
+- [x] Maintain student details in readable format
+- [x] Add "Payment Slip Link:" label for clarity
+- [x] Test email generation (21 tests passing)
+- [x] Verify link is clickable and accessible

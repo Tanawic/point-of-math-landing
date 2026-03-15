@@ -54,29 +54,23 @@ export const appRouter = router({
             message: input.message,
           });
 
-          // Send notification to owner with HTML email containing embedded payment slip image
+          // Send notification to owner with payment slip link
           const studentName = `${input.firstName} ${input.lastName}`;
-          const notificationContent = `
-<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px;">
-  <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px; margin-bottom: 20px;">New Student Enrollment</h2>
-  
-  <div style="background-color: #f9fafb; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
-    <p style="margin: 8px 0;"><strong>Name:</strong> ${studentName}</p>
-    <p style="margin: 8px 0;"><strong>Email:</strong> ${input.email}</p>
-    <p style="margin: 8px 0;"><strong>Phone:</strong> ${input.phone}</p>
-    <p style="margin: 8px 0;"><strong>Course Level:</strong> ${input.courseLevel}</p>
-    <p style="margin: 8px 0;"><strong>LINE ID:</strong> ${input.lineId || "N/A"}</p>
-    ${input.message ? `<p style="margin: 8px 0;"><strong>Message:</strong> ${input.message}</p>` : ""}
-  </div>
-  
-  ${input.paymentSlipUrl ? `
-  <div style="margin-top: 30px; border-top: 2px solid #e5e7eb; padding-top: 20px;">
-    <h3 style="color: #2563eb; margin-bottom: 15px; margin-top: 0;">Payment Slip Image</h3>
-    <img src="${input.paymentSlipUrl}" alt="Payment Slip" style="max-width: 100%; max-height: 600px; border: 1px solid #ddd; border-radius: 4px; display: block;" />
-  </div>
-  ` : `<p style="color: #666; font-style: italic; margin-top: 20px;">No payment slip provided</p>`}
-</div>
+          let notificationContent = `
+New student enrollment:
+- Name: ${studentName}
+- Email: ${input.email}
+- Phone: ${input.phone}
+- Course Level: ${input.courseLevel}
+- LINE ID: ${input.lineId || "N/A"}
+- Payment Slip: ${input.paymentSlipUrl ? "Uploaded" : "Not provided"}
+- Message: ${input.message || "N/A"}
           `.trim();
+
+          // Add payment slip link to notification if provided
+          if (input.paymentSlipUrl) {
+            notificationContent += `\n\nPayment Slip Link:\n${input.paymentSlipUrl}`;
+          }
 
           await notifyOwner({
             title: "New Student Enrollment - Point of Math",
